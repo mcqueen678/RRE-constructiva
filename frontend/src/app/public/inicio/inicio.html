@@ -1,0 +1,37 @@
+<section class="hero">
+  <div class="hero-contenido">
+    <span class="etiqueta">Ingeniería & Construcción</span>
+    <h1>Construimos infraestructura sólida con transparencia en cada etapa</h1>
+    <p>Supervisa en tiempo real el progreso de nuestras obras, proyectos ejecutados y estándares de calidad.</p>
+    <div class="hero-botones">
+      <a routerLink="/proyectos" class="btn-primario">Ver Proyectos</a>
+      <a routerLink="/contacto" class="btn-secundario">Contáctanos</a>
+    </div>
+  </div>
+</section>
+
+<section class="seccion-avances">
+  <div class="contenedor">
+    <header class="seccion-titulo">
+      <h2>Últimos Avances de Obra</h2>
+      <p>Actualizaciones recientes registradas por nuestro equipo técnico</p>
+    </header>
+
+    @if (ultimosAvances().length === 0) {
+      <p class="sin-datos">Aún no hay avances públicos registrados.</p>
+    } @else {
+      <div class="grid-cards">
+        @for (item of ultimosAvances(); track item.id) {
+          <article class="card-obra">
+            <img [src]="item.imagenUrl" [alt]="item.titulo" loading="lazy" />
+            <div class="card-info">
+              <span class="estado">{{ item.estado }}</span>
+              <h3>{{ item.titulo }}</h3>
+              <p>{{ item.descripcion }}</p>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

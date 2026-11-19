@@ -1,0 +1,32 @@
+<main class="login-wrapper">
+  <section class="login-card">
+    <header>
+      <h1>RR Constructiva</h1>
+      <p>Ingresa tus credenciales para acceder al panel</p>
+    </header>
+
+    @if (errorMensaje()) {
+      <div class="alerta-error">{{ errorMensaje() }}</div>
+    }
+
+    <form [formGroup]="formulario" (ngSubmit)="iniciarSesion()">
+      <div class="campo">
+        <label for="correo">Correo Electrónico</label>
+        <input id="correo" type="email" formControlName="correo" placeholder="admin@rr.com" />
+      </div>
+
+      <div class="campo">
+        <label for="password">Contraseña</label>
+        <input id="password" type="password" formControlName="password" placeholder="••••••••" />
+      </div>
+
+      <button type="submit" [disabled]="formulario.invalid || cargando()">
+        {{ cargando() ? 'Ingresando...' : 'Iniciar Sesión' }}
+      </button>
+    </form>
+
+    <footer>
+      <a routerLink="/">← Volver al sitio público</a>
+    </footer>
+  </section>
+</main>

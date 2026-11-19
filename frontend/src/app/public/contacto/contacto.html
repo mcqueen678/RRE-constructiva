@@ -1,0 +1,27 @@
+<section class="pagina-contenedor">
+  <div class="contacto-grid">
+    <div class="datos-empresa">
+      <span class="subtitulo">Hablemos de tu Obra</span>
+      <h1>Contáctanos</h1>
+      <p>Solicita una cotización o agenda una visita técnica con nuestros ingenieros.</p>
+
+      <ul>
+        <li><strong>Correo:</strong> contacto&#64;rrconstructiva.com</li>
+        <li><strong>Horario:</strong> Lunes a Sábado, 8:00 AM - 6:00 PM</li>
+      </ul>
+    </div>
+
+    <form [formGroup]="formulario" (ngSubmit)="enviarConsulta()" class="form-contacto">
+      @if (enviado()) {
+        <div class="exito">¡Mensaje enviado! Nos pondremos en contacto contigo pronto.</div>
+      }
+
+      <input type="text" formControlName="nombre" placeholder="Tu nombre o empresa" />
+      <input type="email" formControlName="correo" placeholder="Correo electrónico" />
+      <input type="tel" formControlName="telefono" placeholder="Teléfono de contacto" />
+      <textarea rows="4" formControlName="mensaje" placeholder="Cuéntanos sobre tu proyecto..."></textarea>
+
+      <button type="submit" [disabled]="formulario.invalid">Enviar Mensaje</button>
+    </form>
+  </div>
+</section>

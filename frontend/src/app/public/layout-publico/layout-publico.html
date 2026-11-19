@@ -1,0 +1,25 @@
+<div class="web-wrapper">
+  <header class="navbar">
+    <div class="nav-contenedor">
+      <a routerLink="/" class="logo">RR <span>Constructiva</span></a>
+
+      <nav class="nav-links">
+        <a routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+        <a routerLink="/nosotros" routerLinkActive="activo">Nosotros</a>
+        <a routerLink="/proyectos" routerLinkActive="activo">Proyectos</a>
+        <a routerLink="/servicios" routerLinkActive="activo">Servicios</a>
+        <a routerLink="/contacto" routerLinkActive="activo">Contacto</a>
+      </nav>
+
+      <a routerLink="/login" class="btn-acceso">Acceso Panel</a>
+    </div>
+  </header>
+
+  <main class="contenido-web">
+    <router-outlet />
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 RR Constructiva. Ingeniería y Construcción.</p>
+  </footer>
+</div>

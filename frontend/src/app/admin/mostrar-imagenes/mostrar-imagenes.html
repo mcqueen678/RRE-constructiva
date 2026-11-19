@@ -1,0 +1,47 @@
+<section class="galeria-contenedor">
+  <header class="galeria-header">
+    <div>
+      <h2>Avances de Obra</h2>
+      <p>Registro visual conectado a PostgreSQL</p>
+    </div>
+
+    <div class="filtros">
+      <button [class.activo]="filtroEstado() === 'TODOS'" (click)="cambiarFiltro('TODOS')">Todos</button>
+      <button [class.activo]="filtroEstado() === 'PENDIENTE'" (click)="cambiarFiltro('PENDIENTE')">Pendientes</button>
+      <button [class.activo]="filtroEstado() === 'EN_PROGRESO'" (click)="cambiarFiltro('EN_PROGRESO')">En Progreso</button>
+      <button [class.activo]="filtroEstado() === 'FINALIZADO'" (click)="cambiarFiltro('FINALIZADO')">Finalizados</button>
+    </div>
+  </header>
+
+  @if (avancesFiltrados().length === 0) {
+    <div class="vacio">
+      <p>No hay avances registrados en esta categoría.</p>
+    </div>
+  } @else {
+    <div class="grid-avances">
+      @for (avance of avancesFiltrados(); track avance.id) {
+        <article class="tarjeta">
+          <div class="imagen-wrapper">
+            <img
+            [src]="avance.imagenUrl"
+            [alt]="avance.titulo"
+            loading="lazy"
+            (error)="$any($event.target).src = 'https://unsplash.com'"
+            />
+            <span class="badge" [attr.data-estado]="avance.estado">{{ avance.estado }}</span>
+          </div>
+
+          <div class="contenido">
+            <span class="fecha">{{ avance.fechaRegistro | date: 'dd/MM/yyyy' }}</span>
+            <h3>{{ avance.titulo }}</h3>
+            <p>{{ avance.descripcion }}</p>
+            <div class="acciones">
+              <a [routerLink]="['/panel/editar-avance', avance.id]" class="btn-editar">Editar</a>
+              <button class="btn-eliminar" (click)="eliminarAvance(avance.id)">Eliminar</button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

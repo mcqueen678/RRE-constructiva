@@ -1,0 +1,27 @@
+<section class="pagina-contenedor">
+  <header class="pagina-header">
+    <span class="subtitulo">Portafolio en Tiempo Real</span>
+    <h1>Nuestros Proyectos y Avances</h1>
+    <p>Explora el historial completo de obras ejecutadas y en curso.</p>
+  </header>
+
+  @if (proyectos().length === 0) {
+    <p class="vacio">No hay proyectos publicados por el momento.</p>
+  } @else {
+    <div class="grid-proyectos">
+      @for (obra of proyectos(); track obra.id) {
+        <article class="card-proyecto">
+          <div class="img-box">
+            <img [src]="obra.imagenUrl" [alt]="obra.titulo" loading="lazy" />
+            <span class="badge">{{ obra.estado }}</span>
+          </div>
+          <div class="info">
+            <small>{{ obra.fechaRegistro | date: 'dd/MM/yyyy' }}</small>
+            <h3>{{ obra.titulo }}</h3>
+            <p>{{ obra.descripcion }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

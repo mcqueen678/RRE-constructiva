@@ -1,0 +1,20 @@
+<div class="layout-panel">
+  <aside class="sidebar">
+    <div class="marca">
+      <h2>RR Panel</h2>
+      <span>{{ usuarioActual?.nombre || 'Administrador' }}</span>
+    </div>
+
+    <nav class="menu">
+      <a routerLink="mostrar-imagenes" routerLinkActive="activo">Galería de Avances</a>
+      <a routerLink="agregar-imagenes" routerLinkActive="activo">Registrar Avance</a>
+      <a routerLink="usuarios" routerLinkActive="activo">Gestión de Usuarios</a>
+    </nav>
+
+    <button class="btn-salir" (click)="salir()">Cerrar Sesión</button>
+  </aside>
+
+  <main class="contenido-principal">
+    <router-outlet />
+  </main>
+</div>

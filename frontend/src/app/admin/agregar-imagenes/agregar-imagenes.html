@@ -1,0 +1,54 @@
+<section class="registro-contenedor">
+  <header class="registro-header">
+    <div>
+      <h2>{{ avanceId() ? 'Editar Avance de Obra' : 'Registrar Nuevo Avance' }}</h2>
+      <p>Sube una fotografía desde tu computadora y actualiza los datos técnicos</p>
+    </div>
+    <a routerLink="/panel/mostrar-imagenes" class="btn-volver">Volver a la galería</a>
+  </header>
+
+  <div class="registro-grid">
+    <form [formGroup]="formulario" (ngSubmit)="guardarAvance()" class="formulario">
+      <div class="campo">
+        <label for="titulo">Título del Avance</label>
+        <input id="titulo" type="text" formControlName="titulo" placeholder="Ej. Vaciado de losa - Nivel 2" />
+      </div>
+
+      <div class="campo">
+        <label for="estado">Estado de Obra</label>
+        <select id="estado" formControlName="estado">
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="EN_PROGRESO">En Progreso</option>
+          <option value="FINALIZADO">Finalizado</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="archivo">Fotografía de Obra (JPG / PNG / WEBP)</label>
+        <input id="archivo" type="file" accept="image/*" (change)="seleccionarArchivo($event)" />
+      </div>
+
+      <div class="campo">
+        <label for="descripcion">Descripción Técnica</label>
+        <textarea id="descripcion" rows="4" formControlName="descripcion"></textarea>
+      </div>
+
+      <button type="submit" class="btn-guardar" [disabled]="formulario.invalid || cargando()">
+        {{ cargando() ? 'Guardando...' : (avanceId() ? 'Actualizar Avance' : 'Guardar Avance') }}
+      </button>
+    </form>
+
+    <aside class="preview-panel">
+      <h3>Vista Previa</h3>
+      @if (vistaPrevia()) {
+        <div class="preview-card">
+          <img [src]="vistaPrevia()" alt="Vista previa" />
+        </div>
+      } @else {
+        <div class="preview-vacio">
+          <p>Selecciona una imagen de tu computadora para previsualizarla aquí.</p>
+        </div>
+      }
+    </aside>
+  </div>
+</section>

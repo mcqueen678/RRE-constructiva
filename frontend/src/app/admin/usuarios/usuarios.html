@@ -1,0 +1,64 @@
+<section class="usuarios-contenedor">
+  <header class="usuarios-header">
+    <h2>Gestión de Usuarios</h2>
+    <p>Administra los accesos al panel de RR Constructiva</p>
+  </header>
+
+  <form [formGroup]="formulario" (ngSubmit)="guardarUsuario()" class="form-horizontal">
+    <input type="text" formControlName="nombre" placeholder="Nombre completo" />
+    <input type="email" formControlName="correo" placeholder="Correo electrónico" />
+    <input
+      type="password"
+      formControlName="password"
+      [placeholder]="usuarioEditandoId() ? 'Nueva clave (opcional)' : 'Contraseña (mín. 6)'"
+    />
+    <select formControlName="rol">
+      <option value="SUPERVISOR">Supervisor</option>
+      <option value="ADMIN">Administrador</option>
+    </select>
+
+    <div class="form-botones">
+      <button type="submit" [disabled]="formulario.invalid || guardando()">
+        {{ guardando() ? 'Guardando...' : (usuarioEditandoId() ? 'Actualizar' : 'Agregar') }}
+      </button>
+
+      @if (usuarioEditandoId()) {
+        <button type="button" class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
+      }
+    </div>
+  </form>
+
+  <div class="tabla-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Registro</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of listaUsuarios(); track user.id) {
+          <tr>
+            <td>{{ user.nombre }}</td>
+            <td>{{ user.correo }}</td>
+            <td>
+              <span class="rol-badge" [attr.data-rol]="user.rol">{{ user.rol }}</span>
+            </td>
+            <td>{{ user.creadoEn | date: 'dd/MM/yyyy' }}</td>
+            <td class="celda-acciones">
+              <button class="btn-editar" (click)="seleccionarParaEditar(user)">Editar</button>
+              <button class="btn-borrar" (click)="eliminarUsuario(user.id)">Eliminar</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="vacio">No hay usuarios registrados.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

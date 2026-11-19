@@ -1,0 +1,75 @@
+.pagina-contenedor {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.pagina-header {
+  max-width: 700px;
+  margin-bottom: 3rem;
+
+  .subtitulo {
+    color: #d97706;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  h1 {
+    margin: 0.5rem 0 0.75rem;
+    font-size: 2.25rem;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+    color: #64748b;
+    font-size: 1rem;
+  }
+}
+
+.grid-servicios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.card-servicio {
+  background: #fff;
+  padding: 2rem 1.75rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid #f59e0b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .numero {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #d97706;
+    background: #fef3c7;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    margin-bottom: 0.85rem;
+  }
+
+  h3 {
+    margin: 0 0 0.65rem;
+    color: #0f172a;
+    font-size: 1.15rem;
+  }
+
+  p {
+    margin: 0;
+    color: #475569;
+    line-height: 1.55;
+    font-size: 0.92rem;
+  }
+}
