@@ -13,7 +13,7 @@ import { UsuariosModule } from './usuarios/usuarios.module.js';
   rootPath: join(process.cwd(), 'uploads'),
   serveRoot: '/uploads',
 }),
-    TypeOrmModule.forRoot({
+        TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
@@ -22,6 +22,7 @@ import { UsuariosModule } from './usuarios/usuarios.module.js';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: process.env.DB_SYNC === 'true',
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
     }),
     UsuariosModule,
     AvancesModule,
