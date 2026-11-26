@@ -168,6 +168,50 @@
   }
 }
 
+.btn-pdf-general {
+  padding: 0.5rem 1.1rem;
+  border: none !important;
+  border-radius: 999px;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #b91c1c !important;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+
+
+.btn-pdf {
+  padding: 0.65rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) {
+    background: #b91c1c;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+
 
 .vacio {
   text-align: center;

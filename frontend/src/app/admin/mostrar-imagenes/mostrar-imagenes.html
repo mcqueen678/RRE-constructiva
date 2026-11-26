@@ -10,6 +10,10 @@
       <button [class.activo]="filtroEstado() === 'PENDIENTE'" (click)="cambiarFiltro('PENDIENTE')">Pendientes</button>
       <button [class.activo]="filtroEstado() === 'EN_PROGRESO'" (click)="cambiarFiltro('EN_PROGRESO')">En Progreso</button>
       <button [class.activo]="filtroEstado() === 'FINALIZADO'" (click)="cambiarFiltro('FINALIZADO')">Finalizados</button>
+      <button type="button" class="btn-pdf-general" (click)="exportarPdf()" [disabled]="generandoPdf() || !avancesFiltrados().length">
+        {{ generandoPdf() ? 'Generando...' : 'Descargar Todos (PDF)' }}
+      </button>
+
     </div>
   </header>
 
@@ -38,6 +42,10 @@
             <div class="acciones">
               <a [routerLink]="['/panel/editar-avance', avance.id]" class="btn-editar">Editar</a>
               <button class="btn-eliminar" (click)="eliminarAvance(avance.id)">Eliminar</button>
+              <button type="button" class="btn-pdf" (click)="exportarPdfIndividual(avance)" [disabled]="generandoPdf()">
+                {{ generandoPdf() ? '...' : 'Informe PDF' }}
+              </button>
+
             </div>
           </div>
         </article>
