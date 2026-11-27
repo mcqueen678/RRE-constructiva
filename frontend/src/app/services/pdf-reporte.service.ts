@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Avance } from '../models/avance.model';
+import { Avance, ESTADOS_OBRA, obtenerNombreEstado } from '../models/avance.model';
 
 @Injectable({ providedIn: 'root' })
 export class PdfReporteService {
@@ -28,23 +28,20 @@ export class PdfReporteService {
     doc.text(`Fecha de emisión: ${fechaActual}  |  Generado por: ${nombreResponsable}`, 14, 31);
 
     // 2. Resumen Ejecutivo (Métricas)
-    const total = avances.length;
-    const finalizados = avances.filter((a) => a.estado === 'FINALIZADO').length;
-    const enProgreso = avances.filter((a) => a.estado === 'EN_PROGRESO').length;
-    const pendientes = avances.filter((a) => a.estado === 'PENDIENTE').length;
+     const conteos = ESTADOS_OBRA.map((est) => {
+      const cant = avances.filter((a) => a.estado === est.codigo).length;
+      return `${est.codigo} (${est.nombre}): ${cant}`;
+    });
 
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
-    doc.text('1. Resumen Ejecutivo de Ejecución', 14, 46);
+    doc.text(`1. Resumen Ejecutivo de Ejecución (Total: ${avances.length})`, 14, 46);
 
-    doc.setFontSize(10);
+    doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
-    doc.text(
-      `Total Registrados: ${total}    |    Finalizados: ${finalizados}    |    En Progreso: ${enProgreso}    |    Pendientes: ${pendientes}`,
-      14,
-      53,
-    );
+    const lineasResumen = doc.splitTextToSize(conteos.join('   |   '), 182);
+    doc.text(lineasResumen, 14, 52);
 
     // 3. Tabla Técnica de Avances
     doc.setFontSize(12);
@@ -54,9 +51,8 @@ export class PdfReporteService {
     const filas = avances.map((av, index) => [
       `${index + 1}`,
       av.titulo,
-      av.estado.replace('_', ' '),
+      obtenerNombreEstado(av.estado),
       av.fechaRegistro ? new Date(av.fechaRegistro).toLocaleDateString('es-PE') : 'Sin fecha',
-
       av.descripcion,
     ]);
 
@@ -94,7 +90,7 @@ export class PdfReporteService {
 
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
-        doc.text(`${i + 1}. ${av.titulo} (${av.estado.replace('_', ' ')})`, 14, yPos);
+        doc.text(`${i + 1}. ${av.titulo} (${obtenerNombreEstado(av.estado)})`, 14, yPos);
 
         const base64 = await this.cargarImagenBase64(av.imagenUrl);
         if (base64) {

@@ -1,52 +1,84 @@
 <section class="registro-contenedor">
   <header class="registro-header">
     <div>
-      <h2>{{ avanceId() ? 'Editar Avance de Obra' : 'Registrar Nuevo Avance' }}</h2>
-      <p>Sube una fotografía desde tu computadora y actualiza los datos técnicos</p>
+      <h2>{{ avanceId() ? 'Editar Avance de Obra' : 'Registrar Avances Fotográficos' }}</h2>
+      <p>Sube hasta 6 fotografías por cliente; cada imagen incrementa automáticamente el porcentaje de avance</p>
     </div>
-    <a routerLink="/panel/mostrar-imagenes" class="btn-volver">Volver a la galería</a>
+    <a
+      [routerLink]="formulario.getRawValue().clienteId ? ['/panel/clientes', formulario.getRawValue().clienteId, 'avances'] : ['/panel/clientes']"
+      class="btn-volver"
+    >
+      Volver a avances
+    </a>
   </header>
 
   <div class="registro-grid">
     <form [formGroup]="formulario" (ngSubmit)="guardarAvance()" class="formulario">
       <div class="campo">
-        <label for="titulo">Título del Avance</label>
-        <input id="titulo" type="text" formControlName="titulo" placeholder="Ej. Vaciado de losa - Nivel 2" />
-      </div>
-
-      <div class="campo">
-        <label for="estado">Estado de Obra</label>
-        <select id="estado" formControlName="estado">
-          <option value="PENDIENTE">Pendiente</option>
-          <option value="EN_PROGRESO">En Progreso</option>
-          <option value="FINALIZADO">Finalizado</option>
+        <label for="clienteId">Cliente / Obra Asociada *</label>
+        <select id="clienteId" formControlName="clienteId">
+          <option value="" disabled>Selecciona un cliente...</option>
+          @for (cliente of clientes(); track cliente.id) {
+            <option [value]="cliente.id">
+              {{ cliente.nombre }} — {{ cliente.proyecto }} ({{ cliente.avances?.length ?? 0 }}/6 fotos)
+            </option>
+          }
         </select>
       </div>
 
       <div class="campo">
-        <label for="archivo">Fotografía de Obra (JPG / PNG / WEBP)</label>
-        <input id="archivo" type="file" accept="image/*" (change)="seleccionarArchivo($event)" />
+        <label for="titulo">Título de la Partida / Evidencia *</label>
+        <input id="titulo" type="text" formControlName="titulo" placeholder="Ej. Levantamiento de muros - Nivel 1" />
       </div>
 
       <div class="campo">
-        <label for="descripcion">Descripción Técnica</label>
+        <label for="estado">Estado de Obra (EO)</label>
+        <select id="estado" formControlName="estado">
+          @for (est of estadosObra; track est.codigo) {
+            <option [value]="est.codigo">{{ est.codigo }} — {{ est.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="archivo">
+          Fotografías de Obra ({{ avanceId() ? '1 foto' : 'Puedes seleccionar varias, máx. 6 por cliente' }})
+        </label>
+        <input
+          id="archivo"
+          type="file"
+          accept="image/*"
+          [multiple]="!avanceId()"
+          (change)="seleccionarArchivos($event)"
+        />
+        @if (mensajeLimite()) {
+          <small style="color: #dc2626; font-weight: 600;">{{ mensajeLimite() }}</small>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="descripcion">Descripción Técnica *</label>
         <textarea id="descripcion" rows="4" formControlName="descripcion"></textarea>
       </div>
 
       <button type="submit" class="btn-guardar" [disabled]="formulario.invalid || cargando()">
-        {{ cargando() ? 'Guardando...' : (avanceId() ? 'Actualizar Avance' : 'Guardar Avance') }}
+        {{ cargando() ? 'Subiendo fotos...' : (avanceId() ? 'Actualizar Avance' : 'Guardar Avances') }}
       </button>
     </form>
 
     <aside class="preview-panel">
-      <h3>Vista Previa</h3>
-      @if (vistaPrevia()) {
-        <div class="preview-card">
-          <img [src]="vistaPrevia()" alt="Vista previa" />
+      <h3>Vista Previa ({{ vistasPrevias().length }} seleccionada(s))</h3>
+      @if (vistasPrevias().length) {
+        <div class="preview-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+          @for (img of vistasPrevias(); track $index) {
+            <div class="preview-card">
+              <img [src]="img" alt="Vista previa" />
+            </div>
+          }
         </div>
       } @else {
         <div class="preview-vacio">
-          <p>Selecciona una imagen de tu computadora para previsualizarla aquí.</p>
+          <p>Selecciona una o varias imágenes (hasta 6 por cliente) para previsualizarlas aquí.</p>
         </div>
       }
     </aside>

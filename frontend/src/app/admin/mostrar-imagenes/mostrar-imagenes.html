@@ -6,13 +6,23 @@
     </div>
 
     <div class="filtros">
-      <button [class.activo]="filtroEstado() === 'TODOS'" (click)="cambiarFiltro('TODOS')">Todos</button>
-      <button [class.activo]="filtroEstado() === 'PENDIENTE'" (click)="cambiarFiltro('PENDIENTE')">Pendientes</button>
-      <button [class.activo]="filtroEstado() === 'EN_PROGRESO'" (click)="cambiarFiltro('EN_PROGRESO')">En Progreso</button>
-      <button [class.activo]="filtroEstado() === 'FINALIZADO'" (click)="cambiarFiltro('FINALIZADO')">Finalizados</button>
-      <button type="button" class="btn-pdf-general" (click)="exportarPdf()" [disabled]="generandoPdf() || !avancesFiltrados().length">
-        {{ generandoPdf() ? 'Generando...' : 'Descargar Todos (PDF)' }}
-      </button>
+      <button
+      type="button"
+      [class.activo]="filtroEstado() === 'TODOS'"
+      (click)="cambiarFiltro('TODOS')"
+      >
+      Todos
+    </button>
+    @for (est of estadosObra; track est.codigo) {
+      <button
+      type="button"
+      [class.activo]="filtroEstado() === est.codigo"
+      (click)="cambiarFiltro(est.codigo)"
+      [title]="est.descripcion"
+      >
+      {{ est.codigo }} - {{ est.nombre }}
+    </button>
+  }
 
     </div>
   </header>
@@ -32,7 +42,8 @@
             loading="lazy"
             (error)="$any($event.target).src = 'https://unsplash.com'"
             />
-            <span class="badge" [attr.data-estado]="avance.estado">{{ avance.estado }}</span>
+            <span class="badge-estado">{{ nombreEstado(avance.estado) }}</span>
+
           </div>
 
           <div class="contenido">

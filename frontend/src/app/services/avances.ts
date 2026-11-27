@@ -9,9 +9,11 @@ export class AvancesService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/avances`;
 
-  listar(): Observable<Avance[]> {
-    return this.http.get<Avance[]>(this.apiUrl);
+  listar(clienteId?: string): Observable<Avance[]> {
+    const url = clienteId ? `${this.apiUrl}?clienteId=${clienteId}` : this.apiUrl;
+    return this.http.get<Avance[]>(url);
   }
+
 
   obtenerPorId(id: string): Observable<Avance> {
     return this.http.get<Avance>(`${this.apiUrl}/${id}`);
@@ -22,6 +24,13 @@ export class AvancesService {
     formData.append('imagen', archivo);
     return this.http.post<{ url: string }>(`${this.apiUrl}/upload`, formData);
   }
+
+    subirMultiplesImagenes(archivos: File[]): Observable<{ urls: string[] }> {
+    const formData = new FormData();
+    archivos.forEach((archivo) => formData.append('imagenes', archivo));
+    return this.http.post<{ urls: string[] }>(`${this.apiUrl}/upload-multiple`, formData);
+  }
+
 
   crear(datos: CrearAvanceDto): Observable<Avance> {
     return this.http.post<Avance>(this.apiUrl, datos);

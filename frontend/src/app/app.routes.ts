@@ -11,6 +11,7 @@ import { LayoutPublico } from './public/layout-publico/layout-publico';
 import { Nosotros } from './public/nosotros/nosotros';
 import { Proyectos } from './public/proyectos/proyectos';
 import { Servicios } from './public/servicios/servicios';
+import { Clientes } from './admin/clientes/clientes';
 
 export const routes: Routes = [
   {
@@ -30,7 +31,9 @@ export const routes: Routes = [
     component: PanelAvance,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'mostrar-imagenes', pathMatch: 'full' },
+      { path: '', redirectTo: 'clientes', pathMatch: 'full' },
+      { path: 'clientes', component: Clientes },
+      { path: 'clientes/:clienteId/avances', component: MostrarImagenes },
       { path: 'agregar-imagenes', component: AgregarImagenes },
       { path: 'editar-avance/:id', component: AgregarImagenes },
       { path: 'mostrar-imagenes', component: MostrarImagenes },

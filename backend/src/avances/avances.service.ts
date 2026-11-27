@@ -12,29 +12,36 @@ export class AvancesService {
     private readonly avanceRepo: Repository<Avance>,
   ) {}
 
-  async create(dto: CreateAvanceDto): Promise<Avance> {
-    const nuevo = this.avanceRepo.create(dto);
-    return this.avanceRepo.save(nuevo);
-  }
-
-  async findAll(): Promise<Avance[]> {
-    return this.avanceRepo.find({ order: { fechaRegistro: 'DESC' } });
-  }
-
-  async findOne(id: string): Promise<Avance> {
-    const avance = await this.avanceRepo.findOneBy({ id });
-    if (!avance) throw new NotFoundException(`Avance con ID ${id} no encontrado`);
-    return avance;
-  }
-
-  async update(id: string, dto: UpdateAvanceDto): Promise<Avance> {
-    const avance = await this.avanceRepo.preload({ id, ...dto });
-    if (!avance) throw new NotFoundException(`Avance con ID ${id} no encontrado`);
+  create(dto: CreateAvanceDto) {
+    const avance = this.avanceRepo.create(dto);
     return this.avanceRepo.save(avance);
   }
 
-  async remove(id: string): Promise<void> {
+  findAll(clienteId?: string) {
+    return this.avanceRepo.find({
+      where: clienteId ? { clienteId } : {},
+      relations: { cliente: true },
+      order: { fechaRegistro: 'DESC' },
+    });
+  }
+
+  async findOne(id: string) {
+    const avance = await this.avanceRepo.findOne({
+      where: { id },
+      relations: { cliente: true },
+    });
+    if (!avance) throw new NotFoundException(`Avance ${id} no encontrado`);
+    return avance;
+  }
+
+  async update(id: string, dto: UpdateAvanceDto) {
     const avance = await this.findOne(id);
-    await this.avanceRepo.remove(avance);
+    Object.assign(avance, dto);
+    return this.avanceRepo.save(avance);
+  }
+
+  async remove(id: string) {
+    const avance = await this.findOne(id);
+    return this.avanceRepo.remove(avance);
   }
 }

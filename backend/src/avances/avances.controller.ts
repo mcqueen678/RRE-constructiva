@@ -7,10 +7,12 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { v2 as cloudinary } from 'cloudinary';
 import { memoryStorage } from 'multer';
 import { AvancesService } from './avances.service.js';
@@ -27,23 +29,33 @@ export class AvancesController {
     });
   }
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('imagen', { storage: memoryStorage() }))
-  async subirImagen(@UploadedFile() file: Express.Multer.File) {
-    if (!file) throw new BadRequestException('No se envió ninguna imagen');
-
-    const resultado = await new Promise<{ secure_url: string }>((resolve, reject) => {
+  private subirACloudinary(buffer: Buffer): Promise<string> {
+    return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         { folder: 'rr-constructiva' },
         (error, result) => {
           if (error || !result) return reject(error);
-          resolve(result);
+          resolve(result.secure_url);
         },
       );
-      uploadStream.end(file.buffer);
+      uploadStream.end(buffer);
     });
+  }
 
-    return { url: resultado.secure_url };
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('imagen', { storage: memoryStorage() }))
+  async subirImagen(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('No se envió ninguna imagen');
+    const url = await this.subirACloudinary(file.buffer);
+    return { url };
+  }
+
+  @Post('upload-multiple')
+  @UseInterceptors(FilesInterceptor('imagenes', 6, { storage: memoryStorage() }))
+  async subirMultiplesImagenes(@UploadedFiles() files: Express.Multer.File[]) {
+    if (!files?.length) throw new BadRequestException('No se enviaron imágenes');
+    const urls = await Promise.all(files.map((f) => this.subirACloudinary(f.buffer)));
+    return { urls };
   }
 
   @Post()
@@ -52,8 +64,8 @@ export class AvancesController {
   }
 
   @Get()
-  findAll() {
-    return this.avancesService.findAll();
+  findAll(@Query('clienteId') clienteId?: string) {
+    return this.avancesService.findAll(clienteId);
   }
 
   @Get(':id')

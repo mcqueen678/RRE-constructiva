@@ -1,0 +1,69 @@
+<section class="clientes-container">
+  <header class="clientes-header">
+    <div>
+      <h1>Gestión de Clientes y Obras</h1>
+      <p>Selecciona un cliente para administrar sus avances de obra e informes PDF</p>
+    </div>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="cliente-form">
+    <h3>{{ editandoId() ? 'Editar Cliente' : 'Registrar Nuevo Cliente' }}</h3>
+    <div class="grid-inputs">
+      <input type="text" formControlName="nombre" placeholder="Nombre del Contacto *" />
+      <input type="text" formControlName="empresa" placeholder="Empresa / Razón Social" />
+      <input type="text" formControlName="ruc" placeholder="RUC / DNI" />
+      <input type="text" formControlName="telefono" placeholder="Teléfono / WhatsApp" />
+      <input type="email" formControlName="correo" placeholder="Correo electrónico" />
+      <input type="text" formControlName="proyecto" placeholder="Nombre de la Obra / Proyecto *" />
+      <input type="text" formControlName="ubicacion" placeholder="Ubicación de la Obra" />
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="form.invalid || guardando()">
+        {{ guardando() ? 'Guardando...' : editandoId() ? 'Actualizar Cliente' : 'Guardar Cliente' }}
+      </button>
+      @if (editandoId()) {
+        <button type="button" class="btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+      }
+    </div>
+  </form>
+
+  @if (cargando()) {
+    <p class="estado-msg">Cargando clientes...</p>
+  } @else if (!clientes().length) {
+    <p class="estado-msg">No hay clientes registrados. Crea el primero arriba.</p>
+  } @else {
+    <div class="clientes-grid">
+      @for (cliente of clientes(); track cliente.id) {
+        <article class="cliente-card">
+          <div class="card-top">
+            <span class="badge-obra">{{ cliente.proyecto }}</span>
+            <span class="badge-count">{{ cliente.avances?.length ?? 0 }} avances</span>
+          </div>
+          <h3>{{ cliente.nombre }}</h3>
+          @if (cliente.empresa) {
+            <p class="empresa">{{ cliente.empresa }} {{ cliente.ruc ? '• RUC: ' + cliente.ruc : '' }}</p>
+          }
+          @if (cliente.ubicacion) {
+            <p class="ubicacion">Ubicación: {{ cliente.ubicacion }}</p>
+          }
+
+          <div class="progreso-pill">
+            <span class="progreso-valor">{{ calcularPorcentaje(cliente) }}%</span>
+            <div class="progreso-track">
+              <div class="progreso-fill" [style.width.%]="calcularPorcentaje(cliente)"></div>
+            </div>
+          </div>
+          <small class="progreso-detalle">{{ cliente.avances?.length ?? 0 }} de 6 fotografías registradas</small>
+
+          <div class="card-actions">
+            <a [routerLink]="['/panel/clientes', cliente.id, 'avances']" class="btn-ver">
+              Ver Avances / PDF
+            </a>
+            <button type="button" class="btn-edit" (click)="editar(cliente)">Editar</button>
+            <button type="button" class="btn-del" (click)="eliminar(cliente.id)">Eliminar</button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>
