@@ -23,6 +23,26 @@
       {{ est.codigo }} - {{ est.nombre }}
     </button>
   }
+<div class="header-acciones">
+  <a routerLink="/panel/clientes" class="btn-volver">← Volver a Clientes</a>
+  <a
+    [routerLink]="['/panel/agregar-avance']"
+    [queryParams]="{ clienteId: clienteId() }"
+    class="btn-nuevo"
+  >
+    + Registrar Avance
+  </a>
+  <button
+    type="button"
+    class="btn-pdf-todos"
+    (click)="exportarPdf()"
+    [disabled]="generandoPdf() || !avancesFiltrados().length"
+  >
+    {{ generandoPdf() ? 'Generando PDF...' : 'Descargar Todos (PDF)' }}
+  </button>
+</div>
+
+
 
     </div>
   </header>

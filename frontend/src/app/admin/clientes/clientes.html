@@ -1,25 +1,30 @@
 <section class="clientes-container">
   <header class="clientes-header">
     <div>
-      <h1>Gestión de Clientes y Obras</h1>
-      <p>Selecciona un cliente para administrar sus avances de obra e informes PDF</p>
+      <h1>Padrón de Beneficiarios y Obras</h1>
+      <p>Ficha técnica de vivienda según informe de supervisión (Máx. 6 evidencias fotográficas por cliente)</p>
     </div>
   </header>
 
   <form [formGroup]="form" (ngSubmit)="guardar()" class="cliente-form">
-    <h3>{{ editandoId() ? 'Editar Cliente' : 'Registrar Nuevo Cliente' }}</h3>
+    <h3>{{ editandoId() ? 'Editar Ficha de Beneficiario' : 'Registrar Nuevo Beneficiario / Obra' }}</h3>
     <div class="grid-inputs">
-      <input type="text" formControlName="nombre" placeholder="Nombre del Contacto *" />
-      <input type="text" formControlName="empresa" placeholder="Empresa / Razón Social" />
-      <input type="text" formControlName="ruc" placeholder="RUC / DNI" />
-      <input type="text" formControlName="telefono" placeholder="Teléfono / WhatsApp" />
-      <input type="email" formControlName="correo" placeholder="Correo electrónico" />
-      <input type="text" formControlName="proyecto" placeholder="Nombre de la Obra / Proyecto *" />
-      <input type="text" formControlName="ubicacion" placeholder="Ubicación de la Obra" />
+      <input type="text" formControlName="codigoProyecto" placeholder="Código VIS / Proyecto (Ej. LIB-669-15-1-15-1)" />
+      <input type="text" formControlName="nombre" placeholder="Apellidos y Nombres del Beneficiario *" />
+      <input type="text" formControlName="ruc" placeholder="DNI / RUC" />
+      <input type="text" formControlName="direccion" placeholder="Dirección / Sector / Mz - Lt" />
+      <input type="text" formControlName="ubicacion" placeholder="Distrito / Provincia" />
+      <select formControlName="modalidad">
+        <option value="CSP">Modalidad: CSP (Construcción en Sitio Propio)</option>
+        <option value="AVN">Modalidad: AVN (Adquisición de Vivienda Nueva)</option>
+        <option value="MV">Modalidad: MV (Mejoramiento de Vivienda)</option>
+      </select>
+      <input type="text" formControlName="proyecto" placeholder="Entidad Técnica / Nombre de Obra *" />
+      <input type="text" formControlName="telefono" placeholder="Teléfono de contacto" />
     </div>
     <div class="form-actions">
       <button type="submit" class="btn-primary" [disabled]="form.invalid || guardando()">
-        {{ guardando() ? 'Guardando...' : editandoId() ? 'Actualizar Cliente' : 'Guardar Cliente' }}
+        {{ guardando() ? 'Guardando...' : editandoId() ? 'Actualizar Ficha' : 'Guardar Beneficiario' }}
       </button>
       @if (editandoId()) {
         <button type="button" class="btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
@@ -28,23 +33,21 @@
   </form>
 
   @if (cargando()) {
-    <p class="estado-msg">Cargando clientes...</p>
+    <p class="estado-msg">Cargando padrón de clientes...</p>
   } @else if (!clientes().length) {
-    <p class="estado-msg">No hay clientes registrados. Crea el primero arriba.</p>
+    <p class="estado-msg">No hay beneficiarios registrados. Crea el primero arriba.</p>
   } @else {
     <div class="clientes-grid">
       @for (cliente of clientes(); track cliente.id) {
         <article class="cliente-card">
           <div class="card-top">
-            <span class="badge-obra">{{ cliente.proyecto }}</span>
-            <span class="badge-count">{{ cliente.avances?.length ?? 0 }} avances</span>
+            <span class="badge-obra">{{ cliente.codigoProyecto || cliente.modalidad || 'CSP' }}</span>
+            <span class="badge-count">{{ cliente.avances?.length ?? 0 }} / 6 fotos</span>
           </div>
           <h3>{{ cliente.nombre }}</h3>
-          @if (cliente.empresa) {
-            <p class="empresa">{{ cliente.empresa }} {{ cliente.ruc ? '• RUC: ' + cliente.ruc : '' }}</p>
-          }
-          @if (cliente.ubicacion) {
-            <p class="ubicacion">Ubicación: {{ cliente.ubicacion }}</p>
+          <p class="empresa"><strong>E.T. / Obra:</strong> {{ cliente.proyecto }}</p>
+          @if (cliente.direccion || cliente.ubicacion) {
+            <p class="ubicacion">{{ cliente.direccion }} {{ cliente.ubicacion ? '— ' + cliente.ubicacion : '' }}</p>
           }
 
           <div class="progreso-pill">
@@ -53,15 +56,22 @@
               <div class="progreso-fill" [style.width.%]="calcularPorcentaje(cliente)"></div>
             </div>
           </div>
-          <small class="progreso-detalle">{{ cliente.avances?.length ?? 0 }} de 6 fotografías registradas</small>
 
-          <div class="card-actions">
+                    <div class="card-actions">
             <a [routerLink]="['/panel/clientes', cliente.id, 'avances']" class="btn-ver">
               Ver Avances / PDF
+            </a>
+            <a
+              [routerLink]="['/panel/agregar-avance']"
+              [queryParams]="{ clienteId: cliente.id }"
+              class="btn-add-avance"
+            >
+              + Registrar Avance
             </a>
             <button type="button" class="btn-edit" (click)="editar(cliente)">Editar</button>
             <button type="button" class="btn-del" (click)="eliminar(cliente.id)">Eliminar</button>
           </div>
+
         </article>
       }
     </div>

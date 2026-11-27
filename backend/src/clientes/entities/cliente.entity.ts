@@ -6,26 +6,29 @@ export class Cliente {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ nullable: true })
+  codigoProyecto: string;
+
   @Column()
   nombre: string;
-
-  @Column({ nullable: true })
-  empresa: string;
 
   @Column({ nullable: true })
   ruc: string;
 
   @Column({ nullable: true })
-  telefono: string;
+  direccion: string;
 
   @Column({ nullable: true })
-  correo: string;
+  ubicacion: string;
+
+  @Column({ default: 'CSP' })
+  modalidad: string;
 
   @Column()
   proyecto: string;
 
   @Column({ nullable: true })
-  ubicacion: string;
+  telefono: string;
 
   @CreateDateColumn()
   fechaRegistro: Date;

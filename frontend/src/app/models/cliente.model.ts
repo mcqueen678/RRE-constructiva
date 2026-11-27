@@ -2,13 +2,14 @@ import { Avance } from './avance.model';
 
 export interface Cliente {
   id: string;
+  codigoProyecto?: string;
   nombre: string;
-  empresa?: string;
   ruc?: string;
-  telefono?: string;
-  correo?: string;
-  proyecto: string;
+  direccion?: string;
   ubicacion?: string;
+  modalidad?: string;
+  proyecto: string;
+  telefono?: string;
   fechaRegistro?: string;
   avances?: Avance[];
 }

@@ -20,24 +20,19 @@ export class Clientes implements OnInit {
   protected readonly editandoId = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
+    codigoProyecto: [''],
     nombre: ['', Validators.required],
-    empresa: [''],
     ruc: [''],
-    telefono: [''],
-    correo: [''],
-    proyecto: ['', Validators.required],
+    direccion: [''],
     ubicacion: [''],
+    modalidad: ['CSP'],
+    proyecto: ['', Validators.required],
+    telefono: [''],
   });
 
   ngOnInit(): void {
     this.cargarClientes();
   }
-
-  calcularPorcentaje(cliente: Cliente): number {
-    const totalFotos = cliente.avances?.length ?? 0;
-    return Math.min(100, Math.round((totalFotos / 6) * 100));
-  }
-
 
   cargarClientes(): void {
     this.cargando.set(true);
@@ -73,19 +68,25 @@ export class Clientes implements OnInit {
   editar(cliente: Cliente): void {
     this.editandoId.set(cliente.id);
     this.form.patchValue({
+      codigoProyecto: cliente.codigoProyecto ?? '',
       nombre: cliente.nombre,
-      empresa: cliente.empresa ?? '',
       ruc: cliente.ruc ?? '',
-      telefono: cliente.telefono ?? '',
-      correo: cliente.correo ?? '',
-      proyecto: cliente.proyecto,
+      direccion: cliente.direccion ?? '',
       ubicacion: cliente.ubicacion ?? '',
+      modalidad: cliente.modalidad ?? 'CSP',
+      proyecto: cliente.proyecto,
+      telefono: cliente.telefono ?? '',
     });
   }
 
   cancelarEdicion(): void {
     this.editandoId.set(null);
-    this.form.reset();
+    this.form.reset({ modalidad: 'CSP' });
+  }
+
+  calcularPorcentaje(cliente: Cliente): number {
+    const totalFotos = cliente.avances?.length ?? 0;
+    return Math.min(100, Math.round((totalFotos / 6) * 100));
   }
 
   eliminar(id: string): void {

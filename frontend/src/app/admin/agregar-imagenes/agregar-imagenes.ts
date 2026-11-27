@@ -38,6 +38,7 @@ export class AgregarImagenes implements OnInit {
 
   protected readonly cupoDisponible = computed(() => {
     const id = this.formulario.controls.clienteId.value;
+    if (!id) return 6;
     const cliente = this.clientes().find((c) => c.id === id);
     const actuales = cliente?.avances?.length ?? 0;
     return Math.max(0, 6 - actuales);
@@ -73,7 +74,16 @@ export class AgregarImagenes implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
 
-    const maxPermitido = this.avanceId() ? 1 : this.cupoDisponible() || 6;
+    const maxPermitido = this.avanceId() ? 1 : this.cupoDisponible();
+
+    if (maxPermitido === 0) {
+      this.mensajeLimite.set('Este beneficiario ya alcanzó el límite máximo de 6 fotografías.');
+      this.archivosSeleccionados = [];
+      this.vistasPrevias.set([]);
+      input.value = '';
+      return;
+    }
+
     const seleccionados = Array.from(input.files).slice(0, maxPermitido);
 
     if (input.files.length > maxPermitido) {
@@ -88,6 +98,12 @@ export class AgregarImagenes implements OnInit {
 
   guardarAvance(): void {
     if (this.formulario.invalid) return;
+
+    if (!this.avanceId() && this.archivosSeleccionados.length === 0) {
+      this.mensajeLimite.set('Debes seleccionar al menos una fotografía de obra.');
+      return;
+    }
+
     this.cargando.set(true);
 
     if (this.archivosSeleccionados.length > 0) {
@@ -107,7 +123,7 @@ export class AgregarImagenes implements OnInit {
 
     if (id) {
       this.avancesService
-         .actualizar(id, { ...base, imagenUrl: urls[0] ?? base.imagenUrl })
+        .actualizar(id, { ...base, imagenUrl: urls[0] ?? base.imagenUrl })
         .subscribe({
           next: () => {
             this.cargando.set(false);

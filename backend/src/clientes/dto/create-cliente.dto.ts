@@ -1,13 +1,13 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateClienteDto {
   @IsString()
-  @IsNotEmpty()
-  nombre: string;
+  @IsOptional()
+  codigoProyecto?: string;
 
   @IsString()
-  @IsOptional()
-  empresa?: string;
+  @IsNotEmpty()
+  nombre: string;
 
   @IsString()
   @IsOptional()
@@ -15,11 +15,15 @@ export class CreateClienteDto {
 
   @IsString()
   @IsOptional()
-  telefono?: string;
+  direccion?: string;
 
-  @IsEmail()
+  @IsString()
   @IsOptional()
-  correo?: string;
+  ubicacion?: string;
+
+  @IsString()
+  @IsOptional()
+  modalidad?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -27,5 +31,5 @@ export class CreateClienteDto {
 
   @IsString()
   @IsOptional()
-  ubicacion?: string;
+  telefono?: string;
 }

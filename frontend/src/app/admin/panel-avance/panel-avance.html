@@ -5,12 +5,20 @@
       <span>{{ usuarioActual?.nombre || 'Administrador' }}</span>
     </div>
 
-    <nav class="menu">
-      <a routerLink="/panel/clientes" routerLinkActive="active">Clientes y Obras</a>
-      <a routerLink="mostrar-imagenes" routerLinkActive="activo">Galería de Avances</a>
-      <a routerLink="agregar-imagenes" routerLinkActive="activo">Registrar Avance</a>
-      <a routerLink="usuarios" routerLinkActive="activo">Gestión de Usuarios</a>
-    </nav>
+    <nav class="sidebar-nav">
+  <a routerLink="/panel/clientes" routerLinkActive="active">Clientes y Obras</a>
+  <a routerLink="/panel/usuarios" routerLinkActive="active">Gestión de Usuarios</a>
+
+  <div class="nav-modulos">
+    <small>Módulos Públicos</small>
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/nosotros">Nosotros</a>
+    <a routerLink="/servicios">Servicios</a>
+    <a routerLink="/proyectos">Proyectos</a>
+    <a routerLink="/contacto">Contacto</a>
+  </div>
+</nav>
+
 
     <button class="btn-salir" (click)="salir()">Cerrar Sesión</button>
   </aside>

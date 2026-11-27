@@ -30,15 +30,16 @@ export const routes: Routes = [
     path: 'panel',
     component: PanelAvance,
     canActivate: [authGuard],
-    children: [
+        children: [
       { path: '', redirectTo: 'clientes', pathMatch: 'full' },
       { path: 'clientes', component: Clientes },
       { path: 'clientes/:clienteId/avances', component: MostrarImagenes },
+      { path: 'agregar-avance', component: AgregarImagenes },
       { path: 'agregar-imagenes', component: AgregarImagenes },
       { path: 'editar-avance/:id', component: AgregarImagenes },
-      { path: 'mostrar-imagenes', component: MostrarImagenes },
       { path: 'usuarios', component: Usuarios },
     ],
+
   },
   { path: '**', redirectTo: '' },
 ];
